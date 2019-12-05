@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>EvaluationVueJs</title>
+    <style>
+        .button{
+            background: darkgrey;
+        }
+    </style>
+</head>
+<body>
+    <div id="eval" >
+        <h1>{{title}}</h1>
+
+        <div id="facture">
+            <div id="tableau" v-html="formulaire">
+
+
+
+
+
+                </table>
+            </div>
+            <div class="button" @click="addLine">+ Ajouter une ligne"</div>
+            <div class="button">Total HT : 836</div>
+            <div class="button ">Total TTC : 987.2</div>
+            <input type="text" v-model="input[0]" >
+            {{input[0]}}
+        </div>
+    </div>
+</body>
+</html>
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script type="text/javascript">
+
+    var json={
+        "factures": [
+            {
+                "id": 1,
+                "designation": "un avion",
+                "qte": "3",
+                "pu_ht": 210,
+                "tva": 20,
+                "p_ht": 756,
+                "p_ttc": 907.2
+            },
+            {
+                "id": 2,
+                "designation": "un bateau",
+                "qte": "4",
+                "pu_ht": 20,
+                "tva": 0,
+                "p_ht": 80,
+                "p_ttc": 80
+            }
+        ]
+    };
+
+    var app = new Vue({
+        el: '#eval',
+        data: {
+            title: 'Evaluation VueJs',
+            datas: json,
+            save_form:[],
+            input:['montest'],
+            formulaire:'<table><tr>' +
+                '<td>Id</td>' +
+                '<td>Designation</td>' +
+                '<td>Qte</td>' +
+                '<td>Pu Ht</td>' +
+                '<td>Tva</td>' +
+                '<td>P Ht</td>' +
+                '<td>P Ttc</td>' +
+                '</tr>',
+        },
+        methods:{
+            addLine: function(){
+                this.formulaire +=' <tr>' +
+                    '<td><input type="text" v-model="input[0]" ></td>' +
+                    '<td>{{data[id].nom}}</td>' +
+                    '<td>Menur déroulant quantitée</td>' +
+                    '<td>{{data[id].pu}}</td>' +
+                    '<td>Menu déroulante TVA</td>' +
+                    '<td>{{data[id].pu * la quantité selectionnée}}</td>' +
+                    '<td>{{data[id].pu * La tva selectionné  * la quantité selectionnée}}</td>' +
+                    '<td>delete ligne</td>' +
+                    '</tr>';
+            },
+        },
+
+        //local storage :
+
+        mounted() {
+            console.log("Je charge le fichier en local storage")
+            let old_save = localStorage.getItem("data_eval_vueJs");
+            let save_form = JSON.parse(old_save);
+            if (save_form) {
+                this.save_form = save_form;
+            }
+
+        },
+        watch: {
+            //passage du tableau en object
+            todo: {
+                //fonction qui s'execute si l'object viens à être modifier
+                handler() {
+                    localStorage.setItem("save_form", JSON.stringify(this.save_form));
+                },
+                //verifie en profondeur
+                deep: true
+            }
+        }
+
+        /**      countFormFull(){
+         *        //ecoute qaund todo va être modifier
+                computed: {
+                execute cette fonction
+                    maxA(){
+                        return this.todo;
+                    }
+                }
+            }
+
+         //parcout un tableau et vire les espaces vide? Retourne dans ce cas un nouveau tableau["a"]  sinon utiliser push ou this = fct()
+         return ["a";" "].filter((w)=> w!=" ").length;
+         ou
+         return mawA().filter(....**/
+
+
+    });
+
+</script>

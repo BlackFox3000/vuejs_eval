@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>EvaluationVueJs</title>
+    <style>
+        .button{
+            background: darkgrey;
+        }
+        td{
+            border: solid;
+        }
+        input{width: 80px}
+    </style>
+</head>
+<body>
+    <div id="eval" >
+        <h1>{{title}}</h1>
+
+        <table style="border:solid">
+            <tr>
+                <td>Id</td>
+                <td>Designation</td>
+                <td>Qte</td>
+                <td>Pu-Ht</td>
+                <td>Tva</td>
+                <td>P Ht</td>
+                <td>P Ttc</td>
+                <td>supr</td>
+            </tr>
+
+            <tr v-for="(item,i) in todo">
+                <!--                on n'oublie pas de mettre à jour l'accès à la valeur souhaité-->
+<!--                <input type="text" v-model="todo[i].titre">-->
+<!--                <input type="button" @click="delete_element(i)" value="delete">-->
+                <td>
+                    {{item.id}}
+                </td>
+                <td>
+                    <input type="text" v-model="todo[i].name">
+                </td>
+                <td>
+                    <input type="number" v-model="todo[i].qte" min="0">
+                </td>
+                <td>
+                    <input type="text" v-model="todo[i].pu">
+                </td>
+                <td>
+                    <input type="number" v-model="todo[i].tva">
+                </td>
+                <td>
+                    {{calculHT(i)}}€
+                </td>
+                <td>
+                    {{calculTTC(i)}}€
+                </td>
+                <td>
+                    <button @click="delete_element(i)">X</button>
+                </td>
+
+
+
+            </tr>
+        </table>
+
+
+        <div class="button" @click="addLine">+ Ajouter une ligne"</div>
+        <div class="button">Total HT : {{HT}}</div>
+        <div class="button ">Total TTC : {{TTC}}</div>
+        </div>
+    </div>
+</body>
+</html>
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script type="text/javascript">
+
+    let vm = new Vue({
+        el: '#eval',
+        data: {
+            todo: [],
+            title: 'Evaluation VueJs',
+        },
+        methods: {
+            addLine: function () {
+                // on initialise un id
+                let id=0;
+                if(this.todo.length>0)
+                    id=this.todo[this.todo.length - 1].id +1;
+                // on initialise un nouvelle object
+                let object={"id": id,"nom": name,"qte": 0,"pu": 0,"tva": 0,"ht":0,"ttc": 0,};
+                // on add l'object au tableau
+                this.todo.push(object);
+            },
+            delete_element:function (index) {
+                this.todo.splice(index, 1);
+            },
+            calculHT(index){
+                let item=this.todo[index];
+                return item.qte * item.pu;
+            },
+            calculTTC(index){
+                let item=this.todo[index];
+                return item.qte * item.pu * item.tva;
+            }
+
+        },
+        computed:{
+            /*Appel automatiquement la fonction si this.todo vien à être modifié*/
+            HT:function (){
+                let HT=0;
+                console.log("HT: ")
+                for(let i=0; i<this.todo.length; i++){
+                    HT+=this.todo[i].ht;
+                    console.log(this.todo[i].ht)
+                }
+                return HT;
+            },
+            //à faire
+            TTC:function (){
+                let ttc=0;
+              //  console.log(ttc)
+                for(let i=0; i<this.todo.length; i++){
+                    ttc+=this.todo[i].ttc;
+                    //console.log(ttc)
+                }
+                return ttc;
+            },
+
+        },
+        //local storage :
+
+        mounted() {
+            console.log("Récupération des données en local effectué")
+            let aaa = localStorage.getItem("panier");
+            aaa = JSON.parse(aaa);
+            if (aaa) {
+                this.todo = aaa;
+            }
+
+        },
+        watch: {
+            //passage du tableau en object
+            todo: {
+                //fonction qui s'execute si l'object viens à être modifier
+                handler() {
+                    localStorage.setItem("panier", JSON.stringify(this.todo));
+                },
+                //verifie en profondeur
+                deep: true
+            }
+        }
+
+        /**      countFormFull(){
+         *        //ecoute qaund todo va être modifier
+                computed: {
+                execute cette fonction
+                    maxA(){
+                        return this.todo;
+                    }
+                }
+            }
+
+         //parcout un tableau et vire les espaces vide? Retourne dans ce cas un nouveau tableau["a"]  sinon utiliser push ou this = fct()
+         return ["a";" "].filter((w)=> w!=" ").length;
+         ou
+         return mawA().filter(....**/
+
+
+    });
+
+</script>
